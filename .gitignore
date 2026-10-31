@@ -221,3 +221,7 @@ __marimo__/
 
 #Datasets
 PetImages
+
+# Trained models
+models/*.keras
+models/*.h5

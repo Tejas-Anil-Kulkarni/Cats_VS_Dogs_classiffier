@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Pawprint — Cat & Dog Classifier</title>
+
+    <link rel="stylesheet"
+          href="/static/css/style.css">
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+
+        <!-- Navigation -->
+
+        <nav class="navbar">
+
+            <a href="/" class="brand">
+                <span class="brand-icon">✳</span>
+                pawprint<span>.</span>
+            </a>
+
+            <div class="nav-right">
+                <span class="status-dot"></span>
+                <span id="apiStatus">Checking model...</span>
+            </div>
+
+        </nav>
+
+
+        <!-- Main Section -->
+
+        <main class="main-container">
+
+            <section class="hero">
+
+                <div class="hero-content">
+
+                    <p class="eyebrow">
+                        COMPUTER VISION / EXPERIMENT 001
+                    </p>
+
+                    <h1>
+                        A little bit of<br>
+                        <span>cat or dog?</span>
+                    </h1>
+
+                    <p class="hero-description">
+
+                        Drop in a photo and let our convolutional
+                        neural network figure out who's looking
+                        back at you.
+
+                    </p>
+
+                    <div class="model-info">
+
+                        <span>✦</span>
+
+                        <p>
+                            Powered by a custom TensorFlow CNN
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Upload Card -->
+
+                <section class="upload-card">
+
+                    <div class="card-heading">
+
+                        <div>
+                            <p class="card-label">IMAGE ANALYSIS</p>
+                            <h2>Try the classifier</h2>
+                        </div>
+
+                        <span class="step-number">01 / 02</span>
+
+                    </div>
+
+
+                    <form id="uploadForm">
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept="image/jpeg,image/png,image/webp"
+                            hidden
+                        >
+
+                        <!-- Drop Zone -->
+
+                        <div class="drop-zone" id="dropZone">
+
+                            <div id="uploadPlaceholder">
+
+                                <div class="upload-icon">
+                                    ↑
+                                </div>
+
+                                <h3>
+                                    Drop your image here
+                                </h3>
+
+                                <p>
+                                    or choose a file from your device
+                                </p>
+
+                                <button
+                                    type="button"
+                                    class="browse-button"
+                                    id="browseButton"
+                                >
+                                    Browse files
+                                </button>
+
+                            </div>
+
+
+                            <!-- Preview -->
+
+                            <div id="previewContainer"
+                                 class="preview-container hidden">
+
+                                <img
+                                    id="imagePreview"
+                                    alt="Selected image preview"
+                                >
+
+                                <div class="preview-overlay">
+
+                                    <span id="fileName"></span>
+
+                                    <button
+                                        type="button"
+                                        id="removeButton"
+                                        class="remove-button"
+                                        aria-label="Remove image"
+                                    >
+                                        ×
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="file-requirements">
+                            JPG, PNG or WEBP · Maximum 10 MB
+                        </p>
+
+
+                        <!-- Submit -->
+
+                        <button
+                            type="submit"
+                            id="predictButton"
+                            class="predict-button"
+                            disabled
+                        >
+
+                            <span id="buttonText">
+                                Analyse image
+                            </span>
+
+                            <span id="buttonArrow">→</span>
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- Loading -->
+
+                    <div id="loading"
+                         class="loading hidden">
+
+                        <div class="loader"></div>
+
+                        <p>
+                            Looking at the pixels...
+                        </p>
+
+                    </div>
+
+
+                    <!-- Error -->
+
+                    <div id="errorMessage"
+                         class="error-message hidden"
+                         role="alert">
+                    </div>
+
+
+                    <!-- Result -->
+
+                    <section id="resultCard"
+                             class="result-card hidden"
+                             aria-live="polite">
+
+                        <div class="result-header">
+
+                            <p class="card-label">
+                                CLASSIFICATION RESULT
+                            </p>
+
+                            <span class="result-tag">
+                                COMPLETE
+                            </span>
+
+                        </div>
+
+
+                        <div class="prediction-main">
+
+                            <div id="predictionEmoji"
+                                 class="prediction-emoji">
+                                🐶
+                            </div>
+
+                            <div class="prediction-details">
+
+                                <p>Our best guess is</p>
+
+                                <h2 id="predictionLabel">
+                                    Dog
+                                </h2>
+
+                            </div>
+
+                            <div class="confidence">
+
+                                <strong id="confidenceValue">
+                                    98.4%
+                                </strong>
+
+                                <span>Confidence</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="probability-section">
+
+                            <div class="probability-heading">
+                                <span>CLASS BREAKDOWN</span>
+                                <span>MODEL SCORES</span>
+                            </div>
+
+
+                            <div class="probability-row">
+
+                                <div class="probability-label">
+                                    🐱 Cat
+                                    <strong id="catProbability">
+                                        1.6%
+                                    </strong>
+                                </div>
+
+                                <div class="progress-track">
+                                    <div id="catBar"
+                                         class="progress-fill cat-fill">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="probability-row">
+
+                                <div class="probability-label">
+                                    🐶 Dog
+                                    <strong id="dogProbability">
+                                        98.4%
+                                    </strong>
+                                </div>
+
+                                <div class="progress-track">
+                                    <div id="dogBar"
+                                         class="progress-fill dog-fill">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            id="resetButton"
+                            class="reset-button"
+                        >
+                            Analyse another image ↗
+                        </button>
+
+                    </section>
+
+                </section>
+
+            </section>
+
+
+            <!-- Bottom Information -->
+
+            <section class="bottom-info">
+
+                <div>
+                    <span class="info-number">01</span>
+                    <div>
+                        <h3>Upload</h3>
+                        <p>Choose any cat or dog image.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="info-number">02</span>
+                    <div>
+                        <h3>Process</h3>
+                        <p>Image resized and normalized.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="info-number">03</span>
+                    <div>
+                        <h3>Predict</h3>
+                        <p>Get your CNN classification.</p>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- Footer -->
+
+        <footer class="footer">
+
+            <p>
+                BUILT WITH TENSORFLOW & FASTAPI
+            </p>
+
+            <p>
+                CAT / DOG CLASSIFICATION · 2026
+            </p>
+
+        </footer>
+
+    </div>
+
+
+    <script src="/static/js/app.js"></script>
+
+</body>
+
+</html>
